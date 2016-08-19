@@ -16,6 +16,10 @@ set spell                       "Enable spell checking
 set hlsearch                    "Highlight all search results
 set incsearch                   "Start searching when you type
 set mouse=a                     "Better mouse scrolling
+set cursorline
+
+hi SpellBad cterm=underline ctermbg=none
+hi CursorLine cterm=none ctermbg=black
 
 " This makes vim act like all other editors, buffers can
 " exist in the background without being in a window.
