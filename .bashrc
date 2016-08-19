@@ -23,10 +23,12 @@ shopt -s checkwinsize        # if necessary, update values of LINES and COLUMNS
 # ===== Prompt =====
 function prompt_command { # context sensitive prompt
 	# change symbol color based on exit code of last command (this must be first!)
-	local exit_status=$([[ $? -eq 0 ]] && tput setaf 2 || tput setaf 3)
-	local symbol="\[${exit_status}\]λ" # default symbol
+	local status=$([[ $? -eq 0 ]] && tput setaf 2 || tput setaf 3)
 
-	# colors
+	# -- default symbol --
+	local symbol="λ"
+
+	# -- colors --
 	local black=$(tput setaf 0)
 	local red=$(tput setaf 1)
 	local green=$(tput setaf 2)
@@ -37,11 +39,12 @@ function prompt_command { # context sensitive prompt
 	local white=$(tput setaf 7)
 	local reset=$(tput sgr0)
 
+	# -- symbol modifiers --
 	# if git directory (other than home) then change symbol
 	if [[ $PWD != ~ && -d .git ]]; then
 		local changed=$(git diff-index --name-only HEAD -- 2> /dev/null)
-		local git_status=$([[ $changed ]] && tput setaf 1 || tput setaf 2)
-		local symbol="\[${git_status}\] "
+		local status=$([[ $changed ]] && tput setaf 1 || tput setaf 2)
+		local symbol=" "
 		# INFO: how to get git character
 		# 1. install FontAwesome (http://fortawesome.github.io/Font-Awesome)
 		# 2. run: fc-cache -fv ~/.local/share/fonts
@@ -49,29 +52,36 @@ function prompt_command { # context sensitive prompt
 		# more: https://github.com/gabrielelana/awesome-terminal-fonts
 	fi
 
-	# show hostname if using ssh
-	if [[ $SSH_CLIENT ]]; then
-		local host="\[${cyan}\][\h]\[${reset}\]:"
+	# python virtual environment
+	if [[ $VIRTUAL_ENV ]]; then
+		local status=$blue
 	fi
 
 	# root user (this should overwrite all other symbols)
 	if [ $(id -u) -eq 0 ]; then
 		case "$(uname -s)" in
 			Darwin) # apple
-				local symbol="\[${exit_status}\]"
+				local symbol=""
 				;;
 			Linux) # tux
-				local symbol="\[${exit_status}\]"
+				local symbol=""
 				;;
 			*) # skull and crossbones
-				local symbol="\[${exit_status}\]☠"
+				local symbol="☠"
 				;;
 		esac
 	fi
 
-	PS1="$host\[${magenta}\]\w \[${reset}\]${symbol}\[${reset}\] "
+	# -- the prompt --
+	PS1="\[${magenta}\]\w \[${reset}\]\[${status}\]${symbol}\[${reset}\] "
+
+	# -- prompt modifiers --
+	# show hostname if using ssh
+	if [[ $SSH_CLIENT ]]; then
+		PS1="\[${cyan}\][\h]\[${reset}\]:$PS1"
+	fi
 }
-PROMPT_COMMAND=prompt_command # [~]λ
+PROMPT_COMMAND=prompt_command # ~ λ
 
 # ===== Alias definitions =====
 if [ -f ~/.bash_aliases ]; then
