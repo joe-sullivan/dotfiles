@@ -37,9 +37,11 @@ alias root='sudo -s'
 alias realias='source ~/.bash_aliases'
 
 # platform dependent aliases
-if [ -f ~/.bash_aliases.mac ]; then
-	. ~/.bash_aliases.mac
-fi
-if [ -f ~/.bash_aliases.linux ]; then
-	. ~/.bash_aliases.linux
-fi
+case "$(uname -s)" in
+	Darwin)
+		. ~/.bash_aliases.mac
+		;;
+	Linux)
+		. ~/.bash_aliases.linux
+		;;
+esac
