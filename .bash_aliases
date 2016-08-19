@@ -36,12 +36,19 @@ alias root='sudo -s'
 
 alias realias='source ~/.bash_aliases'
 
-# platform dependent aliases
+# ===== Platform Dependent =====
 case "$(uname -s)" in
 	Darwin)
-		. ~/.bash_aliases.mac
+		# Add an "alert" alias for long running commands.  Use like so:
+		#   sleep 10;alert
+		alias alert='terminal-notifier -message "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')" -title "$([ $? = 0 ] && echo Complete || echo Error)"'
 		;;
 	Linux)
-		. ~/.bash_aliases.linux
+		# open things more easily
+		alias open='xdg-open &> /dev/null'
+
+		# Add an "alert" alias for long running commands.  Use like so:
+		#   sleep 10; alert
+		alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 		;;
 esac
