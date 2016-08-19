@@ -1,5 +1,7 @@
 *
 !.gitignore
-!.bash*
+!.bash_aliases*
+!.bashrc
+!.bash_profile
 !.vimrc
 !.fonts.conf
