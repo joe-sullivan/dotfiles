@@ -41,7 +41,7 @@ case "$(uname -s)" in
 	Darwin)
 		# Add an "alert" alias for long running commands.  Use like so:
 		#   sleep 10;alert
-		alias alert='terminal-notifier -message "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')" -title "$([ $? = 0 ] && echo Complete || echo Error)"'
+		alias alert='terminal-notifier -title "$([ $? -eq 0 ] && echo Complete || echo Error)" -message "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 		;;
 	Linux)
 		# open things more easily
