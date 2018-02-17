@@ -34,9 +34,16 @@ take() { # make path and go into
 	cd "$1"
 }
 
-alias root='sudo -s'
+alias psg='ps -ef | grep '
 
+alias root='sudo -sE'
+
+alias watch='watch -c'
+
+alias sshconfig="vim ~/.ssh/config"
+alias bashrc="vim ~/.bash_profile"
 alias realias='source ~/.bash_aliases'
+alias reload='source ~/.bash_profile'
 
 # ===== Platform Dependent =====
 case "$(uname -s)" in
