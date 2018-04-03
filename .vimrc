@@ -4,6 +4,7 @@ set nocompatible
 
 " ================ General Config ====================
 
+set title                       "Allow vim to set the terminal title
 set number                      "Line numbers are good
 set backspace=indent,eol,start  "Allow backspace in insert mode
 set history=1000                "Store lots of :cmdline history
@@ -65,7 +66,7 @@ set wildignore+=*.png,*.jpg,*.gif
 
 " ================ Scrolling ========================
 
-"set scrolloff=8             "Start scrolling when we're 8 lines away from margins
+set scrolloff=3              "Start scrolling when we're 8 lines away from margins
 "set sidescrolloff=15
 "set sidescroll=1
 
@@ -94,18 +95,18 @@ map <silent> <D-8> :tabn 8<cr>
 map <silent> <D-9> :tabn 9<cr>
 
 " ===== Add some shortcuts for ctags ================
-map <Leader>tt <esc>:TagbarToggle<cr>
-" TODO later, get open tag in new tab working
+"map <Leader>tt <esc>:TagbarToggle<cr>
+" TODO: get open tag in new tab working
 " http://stackoverflow.com/questions/563616/vim-and-ctags-tips-and-tricks
-" map <C-\>:tab split<CR>:exec("tag ".expand("<cword>"))<CR>
+"map <C-\>:tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 "map <A-]>:vsp <CR>:exec("tag ".expand("<cword>"))<CR>
 
-" Support for github flavored markdown
+" ===== Support for github flavored markdown ========
 " via https://github.com/jtratner/vim-flavored-markdown
 " with .md extensions
 augroup markdown
-    au!
-    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
+	au!
+	au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
 augroup END
 
 " ===== File browser (netrw) ========================
@@ -114,7 +115,53 @@ let g:netrw_liststyle = 3
 let g:netrw_browse_split = 4
 let g:netrw_altv = 1
 let g:netrw_winsize = 25
-augroup ProjectDrawer
-  autocmd!
-  autocmd VimEnter * :Vexplore
+
+fun! VexToggle(dir)
+	if exists("t:vex_buf_nr")
+		call VexClose()
+	else
+		call VexOpen(a:dir)
+	endif
+endf
+
+fun! VexOpen(dir)
+	let g:netrw_browse_split=4
+	let vex_width = 25
+
+	exec "Vex " . a:dir
+	let t:vex_buf_nr = bufnr("%")
+	wincmd H
+
+	call VexSize(vex_width)
+endf
+
+fun! VexClose()
+	let cur_win_nr = winnr()
+	let target_nr = ( cur_win_nr == 1 ? winnr("#") : cur_win_nr )
+
+	1wincmd w
+	close
+	unlet t:vex_buf_nr
+
+	exec (target_nr - 1) . "wincmd w"
+	call NormalizeWidths()
+endf
+
+fun! VexSize(vex_width)
+	exec "vertical resize" . a:vex_width
+	set winfixwidth
+	call NormalizeWidths()
+endf
+
+fun! NormalizeWidths()
+	let eadir_pref = &eadirection
+	set eadirection=hor
+	set equalalways! equalalways!
+	let &eadirection = eadir_pref
+endf
+
+augroup NetrwGroup
+	autocmd! BufEnter * call NormalizeWidths()
 augroup END
+
+noremap <silent> <C-F> :call VexToggle(getcwd())<CR>
