@@ -30,6 +30,12 @@ set hidden
 "turn on syntax highlighting
 syntax on
 
+"move between splits more easily
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
 " ================ Turn Off Swap Files ==============
 
 set nobackup
