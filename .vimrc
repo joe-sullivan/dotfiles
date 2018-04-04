@@ -19,6 +19,8 @@ set incsearch                   "Start searching when you type
 set mouse=a                     "Better mouse scrolling
 set cursorline
 
+set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
+
 hi SpellBad cterm=underline ctermbg=none
 hi CursorLine cterm=none ctermbg=black
 
@@ -72,7 +74,7 @@ set wildignore+=*.png,*.jpg,*.gif
 
 " ================ Scrolling ========================
 
-set scrolloff=3              "Start scrolling when we're 8 lines away from margins
+set scrolloff=3              "Start scrolling when we're 3 lines away from margins
 "set sidescrolloff=15
 "set sidescroll=1
 
@@ -171,3 +173,15 @@ augroup NetrwGroup
 augroup END
 
 noremap <silent> <C-F> :call VexToggle(getcwd())<CR>
+
+" ===== Autocomplete ================================
+function! InsertTabWrapper()
+	let col = col('.') - 1
+	if !col || getline('.')[col - 1] !~ '\k'
+		return "\<tab>"
+	else
+		return "\<c-p>"
+	endif
+endfunction
+inoremap <tab> <c-r>=InsertTabWrapper()<cr>
+inoremap <s-tab> <c-n>
