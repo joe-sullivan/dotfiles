@@ -133,3 +133,34 @@ function! InsertTabWrapper()
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 inoremap <s-tab> <c-n>
+
+" ==== Toggle Comments ==============================
+autocmd FileType c,cpp,java,scala let b:comment_leader = '//'
+autocmd FileType sh,ruby,python   let b:comment_leader = '#'
+autocmd FileType conf,fstab       let b:comment_leader = '#'
+autocmd FileType tex              let b:comment_leader = '%'
+autocmd FileType mail             let b:comment_leader = '>'
+autocmd FileType vim              let b:comment_leader = '"'
+function! CommentToggle()
+	execute ':silent! s/\([^ ]\)/' . b:comment_leader . ' \1/'
+	execute ':silent! s/^\( *\)' . b:comment_leader . ' \?' . b:comment_leader . ' \?/\1/'
+endfunction
+map <C-r> :call CommentToggle()<CR>
+
+" ==== Create a Header ==============================
+function! Header(word, ...)
+	let a:symbol = get(a:, 1, '#')
+	let a:width = 80
+	let a:inserted_word = ' ' . a:word . ' '
+	let a:word_width = strlen(a:inserted_word)
+	let a:length_before = (a:width - a:word_width) / 2
+	let a:hashes_before = repeat(a:symbol, a:length_before)
+	let a:hashes_after = repeat(a:symbol, a:width - (a:word_width + a:length_before))
+	let a:hash_line = repeat(a:symbol, a:width)
+	let a:word_line = a:hashes_before . a:inserted_word . a:hashes_after
+
+	:put =a:hash_line
+	:put =a:word_line
+	:put =a:hash_line
+endfunction
+command! -nargs=+ Header call Header(<f-args>)
