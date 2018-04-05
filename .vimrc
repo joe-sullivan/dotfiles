@@ -19,8 +19,6 @@ set incsearch                   "Start searching when you type
 set mouse=a                     "Better mouse scrolling
 set cursorline
 
-set statusline=%<%f\ (%{&ft})\ %-4(%m%)%=%-19(%3l,%02c%03V%)
-
 hi SpellBad cterm=underline ctermbg=none
 hi CursorLine cterm=none ctermbg=black
 
