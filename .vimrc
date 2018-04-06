@@ -19,8 +19,11 @@ set incsearch                   "Start searching when you type
 set mouse=a                     "Better mouse scrolling
 set cursorline
 
-hi SpellBad cterm=underline ctermbg=none
-hi CursorLine cterm=none ctermbg=black
+hi SpellBad     cterm=underline ctermfg=darkred ctermbg=none
+hi CursorLineNr                 ctermfg=yellow
+hi CursorLine   cterm=none      ctermfg=none    ctermbg=black
+hi MatchParen   cterm=reverse   ctermfg=none    ctermbg=none
+hi Search       cterm=standout  ctermfg=none    ctermbg=none
 
 " This makes vim act like all other editors, buffers can
 " exist in the background without being in a window.
